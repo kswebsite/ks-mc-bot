@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minecraft Bot Launcher</title>
+<style>
+  body { font-family: Arial; text-align: center; padding: 50px; }
+  input { margin: 5px; padding: 8px; width: 200px; }
+  button { padding: 10px 20px; margin-top: 10px; cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>Minecraft Bot Launcher</h1>
+<input type="text" id="ip" placeholder="Server IP"><br>
+<input type="text" id="port" placeholder="Port"><br>
+<input type="text" id="username" placeholder="Username"><br>
+<button onclick="startBot()">Join</button>
+<p id="status"></p>
+
+<script>
+async function startBot() {
+  const ip = document.getElementById('ip').value;
+  const port = document.getElementById('port').value;
+  const username = document.getElementById('username').value;
+
+  const res = await fetch('https://YOUR_VPS_DOMAIN/start-bot', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ip, port, username })
+  });
+
+  const data = await res.json();
+  document.getElementById('status').innerText = data.message;
+}
+</script>
+</body>
+</html>
