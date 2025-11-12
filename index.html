@@ -1,38 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minecraft Bot Launcher</title>
-<style>
-  body { font-family: Arial; text-align: center; padding: 50px; }
-  input { margin: 5px; padding: 8px; width: 200px; }
-  button { padding: 10px 20px; margin-top: 10px; cursor: pointer; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minecraft Bot Launcher</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px;
+      background-color: #f0f0f0;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    input {
+      margin: 5px;
+      padding: 10px;
+      width: 250px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #status {
+      margin-top: 20px;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
 </head>
 <body>
-<h1>Minecraft Bot Launcher</h1>
-<input type="text" id="ip" placeholder="Server IP"><br>
-<input type="text" id="port" placeholder="Port"><br>
-<input type="text" id="username" placeholder="Username"><br>
-<button onclick="startBot()">Join</button>
-<p id="status"></p>
 
-<script>
-async function startBot() {
-  const ip = document.getElementById('ip').value;
-  const port = document.getElementById('port').value;
-  const username = document.getElementById('username').value;
+  <h1>Minecraft Bot Launcher</h1>
 
-  const res = await fetch('https://YOUR_VPS_DOMAIN/start-bot', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ip, port, username })
-  });
+  <input type="text" id="ip" placeholder="Server IP">
+  <input type="text" id="port" placeholder="Port">
+  <input type="text" id="username" placeholder="Username">
+  <button onclick="startBot()">Join</button>
 
-  const data = await res.json();
-  document.getElementById('status').innerText = data.message;
-}
-</script>
+  <p id="status"></p>
+
+  <script>
+    async function startBot() {
+      const ip = document.getElementById('ip').value;
+      const port = document.getElementById('port').value;
+      const username = document.getElementById('username').value;
+
+      if (!ip || !port || !username) {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      try {
+        const response = await fetch('https://ks-mc-bot-kswarrior/start-bot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ip, port, username })
+        });
+
+        const data = await response.json();
+        document.getElementById('status').innerText = data.message;
+      } catch (err) {
+        document.getElementById('status').innerText = 'Error connecting to bot server!';
+        console.error(err);
+      }
+    }
+  </script>
+
 </body>
 </html>
