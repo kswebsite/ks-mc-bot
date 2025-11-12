@@ -21,6 +21,7 @@
   <div id="output"></div>
 
   <script>
+    const { spawn } = require('child_process');
     const joinBtn = document.getElementById('joinBtn');
     const output = document.getElementById('output');
 
@@ -29,17 +30,23 @@
       const port = document.getElementById('port').value;
       const username = document.getElementById('username').value;
 
-      fetch('/start-bot', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ip, port, username })
-      })
-      .then(res => res.json())
-      .then(data => {
-        output.textContent += data.message + '\n';
-      })
-      .catch(err => {
-        output.textContent += 'Error: ' + err + '\n';
+      if (!ip || !port || !username) {
+        output.textContent += "IP, Port, and Username are required!\n";
+        return;
+      }
+
+      const botProcess = spawn('node', ['bot.js', ip, port, username]);
+
+      botProcess.stdout.on('data', (data) => {
+        output.textContent += data.toString();
+      });
+
+      botProcess.stderr.on('data', (data) => {
+        output.textContent += "Error: " + data.toString();
+      });
+
+      botProcess.on('close', (code) => {
+        output.textContent += `Bot exited with code ${code}\n`;
       });
     });
   </script>
