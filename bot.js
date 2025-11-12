@@ -1,33 +1,26 @@
 const mineflayer = require('mineflayer');
-const express = require('express');
-const app = express();
-app.use(express.json());
 
-app.post('/start-bot', (req, res) => {
-  const { ip, port, username } = req.body;
+const [ip, port, username] = process.argv.slice(2);
 
-  const bot = mineflayer.createBot({
-    host: ip,
-    port: parseInt(port),
-    username
-  });
+if (!ip || !port || !username) {
+  console.error('Usage: node bot.js <ip> <port> <username>');
+  process.exit(1);
+}
 
-  bot.on('login', () => console.log(`${username} joined ${ip}:${port}`));
-  bot.on('chat', (user, message) => console.log(`<${user}> ${message}`));
-
-  bot.on('spawn', () => {
-    setInterval(() => {
-      const directions = ['forward', 'back', 'left', 'right'];
-      const dir = directions[Math.floor(Math.random() * directions.length)];
-      bot.setControlState(dir, true);
-      setTimeout(() => bot.setControlState(dir, false), 1000);
-    }, 5000);
-  });
-
-  bot.on('error', (err) => console.log('Error:', err));
-  bot.on('end', () => console.log('Bot disconnected'));
-
-  res.json({ message: `Bot started as ${username}` });
+const bot = mineflayer.createBot({
+  host: ip,
+  port: parseInt(port),
+  username: username
 });
 
-app.listen(3000, () => console.log('Bot server running on port 3000'));
+bot.on('login', () => {
+  console.log(`${username} has joined the server ${ip}:${port}`);
+});
+
+bot.on('chat', (username, message) => {
+  console.log(`${username}: ${message}`);
+});
+
+setInterval(() => {
+  if (bot && bot.chat) bot.chat('Hello from bot!');
+}, 30000);
