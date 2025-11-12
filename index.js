@@ -1,54 +1,38 @@
+// bot-server.js
 const mineflayer = require('mineflayer');
+const express = require('express');
+const app = express();
+app.use(express.json());
 
-let bot; // We'll store the bot instance here
+app.post('/start-bot', (req, res) => {
+  const { ip, port, username } = req.body;
 
-function createBot() {
-  bot = mineflayer.createBot({
-    host: 'ks_warrior.aternos.me',
-    port: 41625,
-    username: 'BotPlayer123', // Change this
+  const bot = mineflayer.createBot({
+    host: ip,
+    port: parseInt(port),
+    username
   });
 
-  bot.on('login', () => {
-    console.log('Bot has joined the server!');
+  bot.on('login', () => console.log(`[${username}] Bot joined ${ip}:${port}`));
+
+  bot.on('chat', (user, message) => {
+    console.log(`<${user}> ${message}`);
   });
-
-  // Make the bot say hello every 30 seconds
-  const chatInterval = setInterval(() => {
-    if (bot && bot.entity) bot.chat('Hello everyone!');
-  }, 30000);
-
-  // Random movement to look like a real player
-  function randomMove() {
-    const directions = ['forward', 'back', 'left', 'right'];
-    const direction = directions[Math.floor(Math.random() * directions.length)];
-
-    bot.setControlState(direction, true);
-    setTimeout(() => {
-      bot.setControlState(direction, false);
-      setTimeout(randomMove, Math.random() * 5000); // Random delay before next move
-    }, Math.random() * 3000); // Random movement duration
-  }
 
   bot.on('spawn', () => {
-    randomMove();
+    // simple random movement example
+    setInterval(() => {
+      const directions = ['forward', 'back', 'left', 'right'];
+      const dir = directions[Math.floor(Math.random() * directions.length)];
+      bot.setControlState(dir, true);
+      setTimeout(() => bot.setControlState(dir, false), 1000);
+    }, 5000);
   });
 
-  // Log chat from other players
-  bot.on('chat', (username, message) => {
-    console.log(`<${username}> ${message}`);
-  });
+  bot.on('error', (err) => console.log('Error:', err));
+  bot.on('end', () => console.log('Bot disconnected'));
 
-  // Handle errors
-  bot.on('error', err => console.log('Error:', err));
+  res.json({ message: `Bot started as ${username}` });
+});
 
-  // Handle disconnection and reconnect
-  bot.on('end', () => {
-    console.log('Bot disconnected. Reconnecting in 5 seconds...');
-    clearInterval(chatInterval); // stop previous chat interval
-    setTimeout(createBot, 5000);
-  });
-}
-
-// Start the bot for the first time
-createBot();
+app.listen(3000, () => console.log('Bot server running on port 3000'));
