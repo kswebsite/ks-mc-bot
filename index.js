@@ -1,4 +1,3 @@
-// bot-server.js
 const mineflayer = require('mineflayer');
 const express = require('express');
 const app = express();
@@ -13,14 +12,10 @@ app.post('/start-bot', (req, res) => {
     username
   });
 
-  bot.on('login', () => console.log(`[${username}] Bot joined ${ip}:${port}`));
-
-  bot.on('chat', (user, message) => {
-    console.log(`<${user}> ${message}`);
-  });
+  bot.on('login', () => console.log(`${username} joined ${ip}:${port}`));
+  bot.on('chat', (user, message) => console.log(`<${user}> ${message}`));
 
   bot.on('spawn', () => {
-    // simple random movement example
     setInterval(() => {
       const directions = ['forward', 'back', 'left', 'right'];
       const dir = directions[Math.floor(Math.random() * directions.length)];
