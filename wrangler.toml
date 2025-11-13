@@ -1,0 +1,11 @@
+name = "minecraft-bot-worker"
+main = "index.js"
+compatibility_date = "2025-11-13"
+type = "javascript"
+
+[build]
+command = "echo 'No build needed for vanilla Worker'"
+
+[site]
+bucket = "."
+entry-point = "."
