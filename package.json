@@ -4,6 +4,7 @@
   "description": "Minecraft bot web interface",
   "main": "index.js",
   "scripts": {
+    "build": "echo 'No build needed for Cloudflare Worker'",
     "start": "node index.js"
   },
   "dependencies": {
