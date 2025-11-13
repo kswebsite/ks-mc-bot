@@ -1,13 +1,14 @@
 {
-  "name": "minecraft-bot",
+  "name": "minecraft-bot-web",
   "version": "1.0.0",
-  "description": "A Mineflayer bot example with web trigger",
+  "description": "Minecraft bot web interface",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "mineflayer": "^4.12.0",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "mineflayer": "^4.10.0",
+    "cors": "^2.8.5"
   }
 }
